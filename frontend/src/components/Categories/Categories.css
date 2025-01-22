@@ -8,6 +8,7 @@
 
 .category-element {
    padding: 10px;
+    cursor: pointer;
 }
 
 .category-titel {

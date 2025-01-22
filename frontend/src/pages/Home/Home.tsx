@@ -9,28 +9,41 @@ import './Home.css'
 
 const Home = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    let filteredRecipes: Recipe[];
 
     useEffect(() => {
     const fetchedRecipes = getRecipes(); // Pobieramy przepisy z serwisu
     setRecipes(fetchedRecipes); // Ustawiamy przepisy w stanie
     }, []);
 
-    const [categories, setCategories] = useState<Category[]>([]);
+
     useEffect(() => {
         const fetchedCategories = getCategoreis();
         setCategories(fetchedCategories);
     }, []);
 
+    const handleSelectCategory = (categoryId: number) => {
+        setSelectedCategory(categoryId);
+    }
+
+    if(selectedCategory !== null && selectedCategory !== 0) {
+        filteredRecipes = recipes.filter((recipe) => recipe.categoriesIds.includes(selectedCategory));
+    }
+    else {
+        filteredRecipes = recipes;
+    }
 
     return (
       <div className="home-container">
           <div className="categories-container">
-              <Categories categories={categories} />
+              <Categories categories={categories} onCategoryClick={handleSelectCategory} />
           </div>
           <div className="recipes-container">
               <h1>Przepisy</h1>
               <div className="recipes-list">
-                  {recipes.map((recipe) => (
+                  {filteredRecipes.map((recipe) => (
                       <RecipeCard
                           key={recipe.id}
                           id={recipe.id}

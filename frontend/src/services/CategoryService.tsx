@@ -2,6 +2,10 @@ import {Category} from "../models/Category.tsx";
 
 const categories: Category[] = [
     {
+        id: 0,
+        name: "Wszystkie"
+    },
+    {
         id: 1,
         name: "Śniadanie"
     },

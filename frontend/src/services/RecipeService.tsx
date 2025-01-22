@@ -10,7 +10,8 @@ const recipes:Recipe[] = [
             " Jajecznice mieszać aż do ścięcia.",
         ingredients: ["3 jajka", "olej", "sól", "pieprz"],
         cookingTime: "5 min",
-        image: "https://naukajedzenia.pl/wp-content/uploads/2023/03/jajecznica-z-cebula2glowne.jpg"
+        image: "https://naukajedzenia.pl/wp-content/uploads/2023/03/jajecznica-z-cebula2glowne.jpg",
+        categoriesIds: [1]
     },
     {
         id: 2,
@@ -20,7 +21,8 @@ const recipes:Recipe[] = [
             " Opcjonalnie można dodać warzywa takie jak pomidor lub sałata.",
         ingredients: ["2 kromki chleba", "masło", "ser żółty", "pomidor (opcjonalnie)", "sałata (opcjonalnie)"],
         cookingTime: "3 min",
-        image: "https://cdn.kalkulatorkalorii.net/photos/Depositphotos_45844395_L.jpg"
+        image: "https://cdn.kalkulatorkalorii.net/photos/Depositphotos_45844395_L.jpg",
+        categoriesIds: [1, 5]
     },
     {
         id: 3,
@@ -31,7 +33,8 @@ const recipes:Recipe[] = [
             " Na wierzch można posypać startym parmezanem.",
         ingredients: ["200g makaronu", "3 łyżki pesto", "parmezan (opcjonalnie)"],
         cookingTime: "15 min",
-        image: "https://staticsmaker.iplsc.com/smaker_production_2023_09_20/1e33f18e5570cb63deb001a9c33aeff6-content.png"
+        image: "https://staticsmaker.iplsc.com/smaker_production_2023_09_20/1e33f18e5570cb63deb001a9c33aeff6-content.png",
+        categoriesIds: [3]
     },
     {
         id: 4,
@@ -42,7 +45,8 @@ const recipes:Recipe[] = [
             " Całość przyprawić oregano, solą i pieprzem.",
         ingredients: ["2 pomidory", "1 ogórek", "1 papryka", "oliwki", "ser feta", "oliwa z oliwek", "oregano", "sól", "pieprz"],
         cookingTime: "10 min",
-        image: "https://saproduwielbiaplmmedia.blob.core.windows.net/media/recipes/images/1699973171491.jpeg"
+        image: "https://saproduwielbiaplmmedia.blob.core.windows.net/media/recipes/images/1699973171491.jpeg",
+        categoriesIds: [2]
     },
     {
         id: 5,
@@ -52,7 +56,8 @@ const recipes:Recipe[] = [
             " Na rozgrzaną patelnię wlać porcję ciasta i smażyć z obu stron na złoty kolor.",
         ingredients: ["1 szklanka mąki", "1 szklanka mleka", "1 jajko", "szczypta soli", "olej do smażenia"],
         cookingTime: "20 min",
-        image: "https://img.wprost.pl/_thumb/1f/1a/c69122a80c37084cbe83608f4120.jpeg"
+        image: "https://img.wprost.pl/_thumb/1f/1a/c69122a80c37084cbe83608f4120.jpeg",
+        categoriesIds: [1,5]
     },
     {
         id: 6,
@@ -62,7 +67,8 @@ const recipes:Recipe[] = [
             " Gotować przez 10 minut, a następnie podać z makaronem lub ryżem.",
         ingredients: ["1 litr bulionu", "500 ml passaty pomidorowej", "makaron lub ryż", "sól", "pieprz", "cukier (opcjonalnie)"],
         cookingTime: "25 min",
-        image: "https://img.wprost.pl/_thumb/1f/1a/c69122a80c37084cbe83608f4120.jpeg"
+        image: "https://img.wprost.pl/_thumb/1f/1a/c69122a80c37084cbe83608f4120.jpeg",
+        categoriesIds: [2,3]
     }
 ];
 

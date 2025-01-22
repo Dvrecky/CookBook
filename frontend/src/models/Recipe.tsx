@@ -5,4 +5,5 @@ export interface Recipe {
     description: string;
     ingredients: string[];
     cookingTime: string;
+    categoriesIds: number[];
 }
