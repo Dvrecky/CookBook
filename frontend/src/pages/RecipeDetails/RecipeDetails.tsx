@@ -30,7 +30,7 @@ const RecipeDetails = () => {
                     </div>
 
                     <div className="steps-container">
-                        <p>Czas przygotowania: {recipe.cookingTime}</p>
+                        <p>Czas przygotowania: {recipe.cookingTime} min</p>
                         <p>Sposób przygotowania:</p>
                         <span className="steps">{recipe.description}</span>
                     </div>

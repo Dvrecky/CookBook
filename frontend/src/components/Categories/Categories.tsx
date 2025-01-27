@@ -24,4 +24,4 @@ const Categories= ({categories, onCategoryClick}: CategoriesProps) => {
     )
 }
 
-export default Categories;
+export default Categories;  

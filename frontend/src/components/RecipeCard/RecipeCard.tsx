@@ -5,7 +5,7 @@ type RecipeCardProps = {
     id: number;
     image: string;
     name: string;
-    cookingTime: string;
+    cookingTime: number;
 }
 
 const RecipeCard = ({id, image, name, cookingTime }: RecipeCardProps) => {
@@ -14,7 +14,7 @@ const RecipeCard = ({id, image, name, cookingTime }: RecipeCardProps) => {
         <div className="recipe-card-container">
             <img className="recipe-img" src={image}/>
             <h3>{name}</h3>
-            <p>Preparation Time: {cookingTime}</p>
+            <p>Preparation Time: {cookingTime} min</p>
         </div>
         </Link>
     );

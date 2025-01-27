@@ -1,0 +1,29 @@
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    font-family: "Comic Sans MS", cursive;
+}
+
+.filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.input-container {
+    font-size: 25px;
+
+    display: flex;
+    gap: 1rem;
+
+}
+
+.filter-label {
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.filter-input {
+    transform: scale(1.5);
+}
