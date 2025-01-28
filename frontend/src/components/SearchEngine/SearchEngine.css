@@ -1,0 +1,24 @@
+.search-input {
+    width: 250px;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 20px;
+    text-align: center;
+}
+
+
+.search-button {
+    width: 100px;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.search-engine-form{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}

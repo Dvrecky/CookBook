@@ -39,3 +39,16 @@
     padding-left: 80px;
     margin-top: 100px;
 }
+
+
+.search-engine-container {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+}
+
+#lack-recipes-mess{
+    font-family: "Comic Sans MS", cursive;
+    font-size: 20px;
+    margin-top: 300px;
+}

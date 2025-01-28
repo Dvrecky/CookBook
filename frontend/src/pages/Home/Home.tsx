@@ -7,6 +7,7 @@ import {getCategoreis} from "../../services/CategoryService.tsx";
 import Categories from "../../components/Categories/Categories.tsx";
 import './Home.css'
 import TypeFilterForm from "../../components/Filters/Filter.tsx";
+import SearchEngine from "../../components/SearchEngine/SearchEngine.tsx";
 
 
 
@@ -19,7 +20,7 @@ const Home = () => {
         timeFilter: null,
     })
     const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipes)
-
+    const [searchPhrase, setSearchPhrase] = useState<string | null>(null);
 
     useEffect(() => {
     const fetchedRecipes = getRecipes();
@@ -61,14 +62,22 @@ const Home = () => {
                     case "ponad 60 min":
                         return recipe.cookingTime > 60;
                     default:
-                        return false;
-                }
+                        return false}
+            })
+        }
+
+        if(searchPhrase && searchPhrase.length > 0) {
+            filteredRecipes = filteredRecipes.filter((recipe) => {
+                return (
+                    recipe.name.toLowerCase().includes(searchPhrase.toLowerCase()) ||
+                    recipe.ingredients.some((ingredient) => ingredient.toLowerCase().includes(searchPhrase.toLowerCase()))
+                );
             })
         }
 
         setFilteredRecipes(filteredRecipes);
 
-    }, [recipes, filters, selectedCategory]);
+    }, [recipes, filters, selectedCategory, searchPhrase]);
 
     const handleSelectCategory = (categoryId: number) => {
         setSelectedCategory(categoryId);
@@ -77,6 +86,11 @@ const Home = () => {
     const handleFilterChange = (selectedFilters: {typeFilter: string[], timeFilter: string | null}) => {
         setFilters(selectedFilters);
     }
+
+    const handleSearchPhraseChange = (newPhrase: string | null) => {
+        setSearchPhrase(newPhrase);
+        console.log("Wyszukiwane hasło:", newPhrase); // Możesz wykorzystać to wedle potrzeb
+    };
 
     const typeFilters = [Tags.Vege, Tags.BezGlutenu, Tags.BezNabialu, Tags.BezCukru, Tags.DanieRybne];
     const timeFilters = ["do 15 min", "do 30 min", "do 60 min", "ponad 60 min"];
@@ -93,13 +107,21 @@ const Home = () => {
                 typeFilters={typeFilters}
                 timeFilters={timeFilters}
                 onFilterChange={handleFilterChange}
-                >
-                </TypeFilterForm>
+                />
             </div>
 
             <div className="recipes-container">
                 <h1>Przepisy</h1>
+
+                <div className="search-engine-container">
+                    <SearchEngine
+                        onSubmit={handleSearchPhraseChange}
+                    />
+                </div>
+
                 <div className="recipes-list">
+                    {filteredRecipes.length === 0 && <p id="lack-recipes-mess"> Brak przepisów </p>}
+
                     {filteredRecipes.map((recipe) => (
                         <RecipeCard
                             key={recipe.id}
