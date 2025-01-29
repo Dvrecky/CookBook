@@ -1,4 +1,5 @@
 import "./Sorter.css"
+import {SorterOption} from "../../models/SorterOption.tsx";
 
 interface SorterProps {
     onSorterChange: (sortAlg: string) => void;
@@ -14,11 +15,11 @@ const Sorter = ({onSorterChange}: SorterProps) => {
         <div>
             <label className="sorter-label">Sortuj: </label>
             <select className="sorter-select" onChange={handleSortAlgChange}>
-                <option value="time-asc">czas przygotowania - rosnąco</option>
-                <option value="time-dsc">czas przygotowania - malejąco</option>
-                <option value="ingredients-asc">ilość składników - rosnąco</option>
-                <option value="ingredients-dsc">ilość składników - malejąco</option>
-                <option value="alphabetically">alfabetycznie</option>
+                <option value={SorterOption.TIME_ASC}>czas przygotowania - rosnąco</option>
+                <option value={SorterOption.TIME_DESC}>czas przygotowania - malejąco</option>
+                <option value={SorterOption.INGREDIENTS_ASC}>ilość składników - rosnąco</option>
+                <option value={SorterOption.INGREDIENTS_DESC}>ilość składników - malejąco</option>
+                <option value={SorterOption.ALPHABETICALLY}>alfabetycznie</option>
             </select>
         </div>
     )

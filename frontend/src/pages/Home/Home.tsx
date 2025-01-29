@@ -1,4 +1,4 @@
-import  {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import RecipeCard from "../../components/RecipeCard/RecipeCard.tsx"
 import {getRecipes} from "../../services/RecipeService.tsx";
 import {Recipe, Tags} from "../../models/Recipe.tsx";
@@ -9,20 +9,18 @@ import './Home.css'
 import TypeFilterForm from "../../components/Filters/Filter.tsx";
 import SearchEngine from "../../components/SearchEngine/SearchEngine.tsx";
 import Sorter from "../../components/Sorter/Sorter.tsx";
-
+import {SorterOption} from "../../models/SorterOption.tsx";
 
 
 const Home = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-    const [filters, setFilters] = useState<{typeFilter: string[], timeFilter: string | null }>({
-        typeFilter: [],
-        timeFilter: null,
-    })
-    const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipes)
-    const [searchPhrase, setSearchPhrase] = useState<string | null>(null);
-    const [sorter, setSorter] = useState<string | null>(null);
+    const [state, setState] = useState({
+        selectedCategory: 0,
+        filters: {typeFilter: [] as string[], timeFilter: null as string | null},
+        searchPhrase: null as string | null,
+        sorter: null as string | null,
+    });
 
     useEffect(() => {
     const fetchedRecipes = getRecipes();
@@ -34,91 +32,62 @@ const Home = () => {
         setCategories(fetchedCategories);
     }, []);
 
-    useEffect(() => {
-        let filteredRecipes = recipes;
+    const filteredRecipes  = useMemo(() => {
+        let result = recipes;
 
-        if(selectedCategory !== null && selectedCategory !== 0) { //id 0 to "Wszytskie"
-            filteredRecipes = recipes.filter((recipe) => recipe.categoriesIds.includes(selectedCategory));
+        if(state.selectedCategory !== null && state.selectedCategory !== 0) {//id 0 to "Wszytskie"
+            result = result.filter((recipe) => recipe.categoriesIds.includes(state.selectedCategory));
         }
 
-        if (filters.typeFilter.length > 0) {
-
-            if (filters.typeFilter.length > 0) {
-                filteredRecipes = filteredRecipes.filter((recipe) => {
-                    return filters.typeFilter.every((filter) => recipe.tags.includes(filter as Tags));
-                });
-            }
-
-        }
-
-        if(filters.timeFilter) {
-            filteredRecipes = filteredRecipes.filter((recipe) => {
-                switch(filters.timeFilter) {
-                    case "do 15 min":
-                        return recipe.cookingTime <= 15;
-                    case "do 30 min":
-                        return recipe.cookingTime <= 30;
-                    case "do 60 min":
-                        return recipe.cookingTime <= 60;
-                    case "ponad 60 min":
-                        return recipe.cookingTime > 60;
-                    default:
-                        return false}
-            })
-        }
-
-        if(searchPhrase && searchPhrase.length > 0) {
-            filteredRecipes = filteredRecipes.filter((recipe) => {
-                return (
-                    recipe.name.toLowerCase().includes(searchPhrase.toLowerCase()) ||
-                    recipe.ingredients.some((ingredient) => ingredient.toLowerCase().includes(searchPhrase.toLowerCase()))
-                );
-            })
-        }
-
-        if(sorter) {
-            filteredRecipes = [...filteredRecipes].sort((a, b) => {
-            switch (sorter) {
-
-                case "time-asc":
-                    return a.cookingTime - b.cookingTime;
-
-                case "time-dsc":
-                    return b.cookingTime - a.cookingTime;
-
-                case "ingredients-asc":
-                    return a.ingredients.length - b.ingredients.length;
-
-                case "ingredients-dsc":
-                    return b.ingredients.length - a.ingredients.length
-
-                case "alphabetically":
-                    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-
-                default:
-                    return 0;
-            }
+        if (state.filters.typeFilter.length > 0) {
+            result = result.filter((recipe) => {
+                state.filters.typeFilter.every((filter) => recipe.tags.includes(filter as Tags))
             });
         }
 
-        setFilteredRecipes(filteredRecipes);
+        if (state.filters.timeFilter) {
+            result = result.filter((recipe) => {
+                switch (state.filters.timeFilter) {
+                    case "do 15 min": return recipe.cookingTime <= 15;
+                    case "do 30 min": return recipe.cookingTime <= 30;
+                    case "do 60 min": return recipe.cookingTime <= 60;
+                    case "ponad 60 min": return recipe.cookingTime > 60;
+                    default: return false;
+                }
+            });
+        }
 
-    }, [recipes, filters, selectedCategory, searchPhrase, sorter]);
+        if (state.sorter) {
+            result = [...result].sort((a, b) => {
+                switch (state.sorter) {
+                    case SorterOption.TIME_ASC: return a.cookingTime - b.cookingTime;
+                    case SorterOption.TIME_DESC: return b.cookingTime - a.cookingTime;
+                    case SorterOption.INGREDIENTS_ASC: return a.ingredients.length - b.ingredients.length;
+                    case SorterOption.INGREDIENTS_DESC: return b.ingredients.length - a.ingredients.length;
+                    case SorterOption.ALPHABETICALLY: return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+                    default: return 0;
+                }
+            });
+        }
+
+        return result;
+    }, [recipes, state])
+
 
     const handleSelectCategory = (categoryId: number) => {
-        setSelectedCategory(categoryId);
+        setState(prevState => ({ ...prevState, selectedCategory: categoryId }));
     }
 
     const handleFilterChange = (selectedFilters: {typeFilter: string[], timeFilter: string | null}) => {
-        setFilters(selectedFilters);
+        setState(prevState => ({...prevState, filters: selectedFilters}));
     }
 
     const handleSearchPhraseChange = (newPhrase: string | null) => {
-        setSearchPhrase(newPhrase);
+        setState(prevState => ({ ...prevState, newPhrase: newPhrase }));
     };
 
     const handleSorterChange = (sortAlg: string) => {
-        setSorter(sortAlg);
+        setState(prevState => ({...prevState, sorter: sortAlg}));
     }
 
     const typeFilters = [Tags.Vege, Tags.BezGlutenu, Tags.BezNabialu, Tags.BezCukru, Tags.DanieRybne];
