@@ -1,0 +1,13 @@
+.sorter-select{
+    width: 320px;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.sorter-label {
+    font-family: "Comic Sans MS", cursive;
+    font-size: 25px;
+}

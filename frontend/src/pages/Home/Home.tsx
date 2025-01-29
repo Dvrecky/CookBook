@@ -8,6 +8,7 @@ import Categories from "../../components/Categories/Categories.tsx";
 import './Home.css'
 import TypeFilterForm from "../../components/Filters/Filter.tsx";
 import SearchEngine from "../../components/SearchEngine/SearchEngine.tsx";
+import Sorter from "../../components/Sorter/Sorter.tsx";
 
 
 
@@ -21,6 +22,7 @@ const Home = () => {
     })
     const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipes)
     const [searchPhrase, setSearchPhrase] = useState<string | null>(null);
+    const [sorter, setSorter] = useState<string | null>(null);
 
     useEffect(() => {
     const fetchedRecipes = getRecipes();
@@ -49,7 +51,6 @@ const Home = () => {
 
         }
 
-
         if(filters.timeFilter) {
             filteredRecipes = filteredRecipes.filter((recipe) => {
                 switch(filters.timeFilter) {
@@ -75,9 +76,34 @@ const Home = () => {
             })
         }
 
+        if(sorter) {
+            filteredRecipes = [...filteredRecipes].sort((a, b) => {
+            switch (sorter) {
+
+                case "time-asc":
+                    return a.cookingTime - b.cookingTime;
+
+                case "time-dsc":
+                    return b.cookingTime - a.cookingTime;
+
+                case "ingredients-asc":
+                    return a.ingredients.length - b.ingredients.length;
+
+                case "ingredients-dsc":
+                    return b.ingredients.length - a.ingredients.length
+
+                case "alphabetically":
+                    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+
+                default:
+                    return 0;
+            }
+            });
+        }
+
         setFilteredRecipes(filteredRecipes);
 
-    }, [recipes, filters, selectedCategory, searchPhrase]);
+    }, [recipes, filters, selectedCategory, searchPhrase, sorter]);
 
     const handleSelectCategory = (categoryId: number) => {
         setSelectedCategory(categoryId);
@@ -89,8 +115,11 @@ const Home = () => {
 
     const handleSearchPhraseChange = (newPhrase: string | null) => {
         setSearchPhrase(newPhrase);
-        console.log("Wyszukiwane hasło:", newPhrase); // Możesz wykorzystać to wedle potrzeb
     };
+
+    const handleSorterChange = (sortAlg: string) => {
+        setSorter(sortAlg);
+    }
 
     const typeFilters = [Tags.Vege, Tags.BezGlutenu, Tags.BezNabialu, Tags.BezCukru, Tags.DanieRybne];
     const timeFilters = ["do 15 min", "do 30 min", "do 60 min", "ponad 60 min"];
@@ -113,10 +142,16 @@ const Home = () => {
             <div className="recipes-container">
                 <h1>Przepisy</h1>
 
-                <div className="search-engine-container">
-                    <SearchEngine
-                        onSubmit={handleSearchPhraseChange}
-                    />
+                <div className="searchEngine-sorter-container">
+                    <div className="search-engine-container">
+                        <SearchEngine
+                            onSubmit={handleSearchPhraseChange}
+                        />
+                    </div>
+
+                    <div>
+                        <Sorter onSorterChange={handleSorterChange}/>
+                    </div>
                 </div>
 
                 <div className="recipes-list">
