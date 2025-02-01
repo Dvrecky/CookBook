@@ -5,10 +5,13 @@ import com.ReactProjects.cookbook.dto.ShoppingListDTO;
 import com.ReactProjects.cookbook.entity.Item;
 import com.ReactProjects.cookbook.repository.ShoppingListRepository;
 import com.ReactProjects.cookbook.service.ItemService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ItemServiceImpl implements ItemService {
 
     private final ShoppingListRepository shoppingListRepository;
@@ -30,5 +33,22 @@ public class ItemServiceImpl implements ItemService {
         shoppingListDTO.setItemDTOS(itemDTOS);
 
         return shoppingListDTO;
+    }
+
+    @Override
+    public void changeQuantity(long id, int newQuantity) {
+        shoppingListRepository.changeItemQuantity(id, newQuantity);
+    }
+
+    @Transactional
+    @Override
+    public void deleteItemById(long id) {
+
+        try {
+            shoppingListRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println("Błąd");
+        }
+
     }
 }

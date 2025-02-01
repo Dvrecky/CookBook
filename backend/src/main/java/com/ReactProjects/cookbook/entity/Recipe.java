@@ -1,6 +1,5 @@
 package com.ReactProjects.cookbook.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,6 +45,4 @@ public class Recipe {
 
     @Column(name = "tags")
     private String tags;
-
-
 }
