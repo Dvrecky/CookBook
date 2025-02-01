@@ -60,3 +60,17 @@
     align-items: center;
     gap: 50px;
 }
+
+.middle-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30rem;
+}
+
+.open-dialog-button{
+    height: 40px;
+    width: 200px;
+    font-family: "Comic Sans MS", cursive;
+    font-size: 24px;
+}

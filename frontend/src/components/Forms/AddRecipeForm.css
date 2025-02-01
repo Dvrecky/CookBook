@@ -1,0 +1,42 @@
+.add-recipe-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    font-size: 26px;
+    font-family: "Comic Sans MS", cursive
+}
+
+.checkboxes-container{
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkbox {
+    transform: scale(1.5);
+    margin-right: 10px;
+}
+
+.form-text-input {
+    font-size: 26px;
+    width: 400px;
+}
+
+.recipe-form-buttons-container{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 25px;
+}
+
+.recipe-form-button {
+    height: 40px;
+    width: 150px;
+    font-family: "Comic Sans MS", cursive;
+    font-size: 26px;
+}

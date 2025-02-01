@@ -10,6 +10,7 @@ import TypeFilterForm from "../../components/Filters/Filter.tsx";
 import SearchEngine from "../../components/SearchEngine/SearchEngine.tsx";
 import Sorter from "../../components/Sorter/Sorter.tsx";
 import {SorterOption} from "../../models/SorterOption.tsx";
+import Dialog from "../../components/Dialog/Dialog.tsx";
 
 
 const Home = () => {
@@ -21,6 +22,7 @@ const Home = () => {
         searchPhrase: null as string | null,
         sorter: null as string | null,
     });
+    const [dialog, setDialog] = useState(false);
 
     useEffect(() => {
     const fetchedRecipes = getRecipes();
@@ -39,9 +41,18 @@ const Home = () => {
             result = result.filter((recipe) => recipe.categoriesIds.includes(state.selectedCategory));
         }
 
+        if(state.searchPhrase) {
+            result = result.filter((recipe) => {
+                return (
+                    recipe.name.toLowerCase().includes(state.searchPhrase.toLowerCase()) ||
+                    recipe.ingredients.includes(state.searchPhrase.toLowerCase())
+                )
+            });
+        }
+
         if (state.filters.typeFilter.length > 0) {
             result = result.filter((recipe) => {
-                state.filters.typeFilter.every((filter) => recipe.tags.includes(filter as Tags))
+                return state.filters.typeFilter.every((filter) => recipe.tags.includes(filter as Tags))
             });
         }
 
@@ -83,7 +94,7 @@ const Home = () => {
     }
 
     const handleSearchPhraseChange = (newPhrase: string | null) => {
-        setState(prevState => ({ ...prevState, newPhrase: newPhrase }));
+        setState(prevState => ({ ...prevState, searchPhrase: newPhrase }));
     };
 
     const handleSorterChange = (sortAlg: string) => {
@@ -93,27 +104,36 @@ const Home = () => {
     const typeFilters = [Tags.Vege, Tags.BezGlutenu, Tags.BezNabialu, Tags.BezCukru, Tags.DanieRybne];
     const timeFilters = ["do 15 min", "do 30 min", "do 60 min", "ponad 60 min"];
 
-
     return (
         <div className="home-container">
             <div className="categories-container">
                 <Categories categories={categories} onCategoryClick={handleSelectCategory}/>
             </div>
 
-            <div className="filters-container">
-                <TypeFilterForm
-                typeFilters={typeFilters}
-                timeFilters={timeFilters}
-                onFilterChange={handleFilterChange}
+
+            <div className="middle-column">
+                <div className="filters-container">
+                    <TypeFilterForm
+                        typeFilters={typeFilters}
+                        timeFilters={timeFilters}
+                        onFilterChange={handleFilterChange}
+                    />
+                </div>
+
+                    <button className="open-dialog-button" onClick={() => setDialog(true)}>Dodaj przepis</button>
+
+
+                <Dialog
+                    openDialog={dialog}
+                    closeDialog={() => setDialog(false)}
                 />
             </div>
-
             <div className="recipes-container">
                 <h1>Przepisy</h1>
 
                 <div className="searchEngine-sorter-container">
                     <div className="search-engine-container">
-                        <SearchEngine
+                    <SearchEngine
                             onSubmit={handleSearchPhraseChange}
                         />
                     </div>
