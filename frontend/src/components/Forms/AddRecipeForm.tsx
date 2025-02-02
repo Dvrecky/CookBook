@@ -1,8 +1,10 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {RecipeValidator} from "./RecipeValidator.ts";
 import {Category} from "../../models/Category.tsx";
 import "./AddRecipeForm.css"
 import {Tag} from "../../models/Tag.ts";
+import {Recipe} from "../../models/Recipe.tsx";
+import axios from "axios";
 
 interface Props {
     onSubmit: (data: any) => void;
@@ -15,7 +17,7 @@ const initialFormData = {
     cookingTime: "",
     description: "",
     ingredients: "",
-    categoriesIds: [],
+    categories: [],
     tags: [],
     imgPath: ""
 };
@@ -28,45 +30,66 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
         cookingTime: "",
         description: "",
         ingredients: "",
-        categoriesIds: [] as number[],
-        tags: [] as string[],
+        categories: [] as number[],
+        tags: [] as number[],
         imgPath: ""
     });
 
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const validationErrors = RecipeValidator(formData);
         if (Object.keys(validationErrors).length === 0) {
-            // Formularz jest poprawny - można wysłać dane, np. do API lub innej funkcji
-            console.log("Dane formularza:", formData);
-
-            const separatedIngredients = formData.ingredients.split(',');
-            console.log(separatedIngredients);
-
-            onSubmit(formData);
-            setFormData(initialFormData)
-        }
-        else {
+            // Format data for POST request
+            const newRecipe: Recipe = {
+                name: formData.name,
+                description: formData.description,
+                cookingTime: parseInt(formData.cookingTime), // Ensure it's an integer
+                imgPath: formData.imgPath,
+                categories: formData.categories,
+                tags: formData.tags,
+                ingredients: formData.ingredients.split(",").map((ingredient: string) => {
+                    return {
+                        name: ingredient.trim(),
+                        quantity: 0, // Assuming a default quantity if you don't want to modify this logic
+                        unit: null, // Assuming a default unit; you can change this
+                    };
+                }),
+            };
+            console.log(newRecipe);
+            try {
+                // POST the recipe to the API
+                await axios.post("http://localhost:8080/api/recipes", newRecipe);
+                console.log("Recipe added successfully");
+                onSubmit(newRecipe);
+                setFormData(initialFormData); // Reset the form
+            } catch (error) {
+                console.error("Error adding recipe:", error);
+            }
+        } else {
             setErrors(validationErrors);
         }
-    }
+    };
 
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, checked } = e.target;
+
         if (name === "categories") {
             setFormData((prev) => {
-                const currentArray = prev.categoriesIds;
+                const currentArray = prev.categories;
+
                 if (checked) {
+                    // Dodajemy ID kategorii (value) do tablicy categories
                     return {
                         ...prev,
-                        categoriesIds: [...currentArray, Number(value)],
+                        categories: [...currentArray, Number(value)], // Używamy Number(value), żeby upewnić się, że jest to typ number
                     };
                 } else {
+                    // Usuwamy ID kategorii (value) z tablicy categories
                     return {
                         ...prev,
-                        categoriesIds: currentArray.filter((id) => id !== Number(value)),
+                        categories: currentArray.filter((id) => id !== Number(value)), // Filtrujemy ID
                     };
                 }
             });
@@ -74,23 +97,28 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
             setFormData((prev) => {
                 const currentArray = prev.tags;
                 if (checked) {
+                    // Dodajemy ID tagu (value) do tablicy tags (zakładając, że value to ID tagu w formie string)
                     return {
                         ...prev,
-                        tags: [...currentArray, value],
+                        tags: [...currentArray, Number(value)], // Używamy Number(value), żeby upewnić się, że jest to typ number
                     };
                 } else {
+                    // Usuwamy ID tagu z tablicy tags
                     return {
                         ...prev,
-                        tags: currentArray.filter((tag) => tag !== value),
+                        tags: currentArray.filter((tagId) => tagId !== Number(value)), // Filtrujemy ID
                     };
                 }
             });
-        }
-        else {
+        } else {
+            // Zmiana innych pól formularza
             setFormData({ ...formData, [e.target.name]: value });
         }
-
     };
+
+
+
+
 
     const handleCloseForm = () => {
         setFormData(initialFormData);
@@ -178,7 +206,7 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
                             className="checkbox"
                             type="checkbox"
                             name="tags"
-                            value={tag.name}
+                            value={tag.id}
                             onChange={handleFormChange}
                         />
                         {tag.name}

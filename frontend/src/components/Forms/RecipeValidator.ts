@@ -4,8 +4,8 @@ export interface RecipeFormData {
     cookingTime: string;
     description: string;
     ingredients: string;
-    categoriesIds: number[];
-    tags: string[];
+    categories: number[];
+    tags: number[];
     imgPath: string;
 }
 
@@ -19,7 +19,6 @@ export const RecipeValidator = (data: RecipeFormData): ValidationErrors => {
     const nameAndDescriptionPattern = /^[a-zA-Z0-9\s\-,.]+$/;
     const ingredientPattern = /^(\d*\s*[a-zA-Z]+)(,\s*\d*\s*[a-zA-Z]+)*$/;
 
-    console.log("dane sprawdzane: " + data.name);
 
     if (!data.name.trim()) {
         newErrors.name = "Nazwa jest wymagana";
@@ -45,7 +44,7 @@ export const RecipeValidator = (data: RecipeFormData): ValidationErrors => {
 
     }
 
-    if (!data.categoriesIds || (Array.isArray(data.categoriesIds) && data.categoriesIds.length === 0)) {
+    if (!data.categories || (Array.isArray(data.categories) && data.categories.length === 0)) {
         newErrors.categoriesIds = "Wybierz co najmniej jedną kategorię";
 
     }

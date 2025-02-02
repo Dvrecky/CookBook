@@ -23,11 +23,11 @@ public class Tag {
     public Tag() {
     }
 
-    public long getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public long getId() {
+        return id;
     }
 }

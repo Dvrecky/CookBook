@@ -22,6 +22,7 @@ const RecipeDetails = () => {
         return <p>Recipe not found</p>
     }
 
+
     const handleDeleteRecipe = () => {
 
     }
@@ -47,7 +48,7 @@ const RecipeDetails = () => {
                         <p>Składniki</p>
                         <ul className="ingredients-list-ul">
                             {recipe.ingredients.map((ingredient, index) => (
-                                <li className="ingredients-list-li" key={index}>{ingredient}</li>
+                                <li className="ingredients-list-li" key={index}>{ingredient.name}</li>
                             ))}
                         </ul>
                     </div>

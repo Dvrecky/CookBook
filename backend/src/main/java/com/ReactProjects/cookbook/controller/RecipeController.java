@@ -1,9 +1,11 @@
 package com.ReactProjects.cookbook.controller;
 
 
+import com.ReactProjects.cookbook.dto.RecipeRequestDto;
 import com.ReactProjects.cookbook.entity.Recipe;
 import com.ReactProjects.cookbook.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +35,11 @@ public class RecipeController {
         Optional<Recipe> recipe = recipeService.getRecipe(id);
 
         return recipe.isPresent() ? ResponseEntity.ok(recipe.get()) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Recipe> addRecipe(@RequestBody RecipeRequestDto recipeDto) {
+        Recipe savedRecipe = recipeService.addRecipe(recipeDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
     }
 }
