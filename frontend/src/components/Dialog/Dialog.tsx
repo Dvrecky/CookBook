@@ -1,15 +1,14 @@
-import {useEffect, useRef} from "react";
+import {ReactNode, useEffect, useRef} from "react";
 import "./Dialog.css"
-import AddRecipeForm from "../Forms/AddRecipeForm.tsx";
 
 interface DialogProps {
     openDialog: boolean;
     closeDialog: () => void;
+    children: ReactNode;
 }
 
-const Dialog = ( {openDialog, closeDialog}: DialogProps) => {
+const Dialog = ( {openDialog, closeDialog,children}: DialogProps) => {
     const dialogRef = useRef<HTMLDialogElement>(null);
-
 
     useEffect(() => {
         if (openDialog) {
@@ -19,15 +18,10 @@ const Dialog = ( {openDialog, closeDialog}: DialogProps) => {
         }
     }, [openDialog]);
 
-    const handleFormSubmit = (data: any) => {
-        console.log("Formularz wysłany:", data);
-        closeDialog();
-    };
-
 
     return (
         <dialog className="dialog" ref={dialogRef} onCancel={closeDialog}>
-            <AddRecipeForm onSubmit={handleFormSubmit} onCancel={closeDialog} />
+            {children}
         </dialog>
     );
 }

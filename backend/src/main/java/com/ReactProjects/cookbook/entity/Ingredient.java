@@ -19,19 +19,22 @@ public class Ingredient {
     @Column(name = "id")
     private long id;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     @Column(name = "quantity")
     private int quantity;
 
     @Column(name = "unit")
     private String unit;
 
-    public Ingredient(String unit, int quantity, Product product) {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
+    public Ingredient(String unit, int quantity) {
         this.unit = unit;
         this.quantity = quantity;
-        this.product = product;
+
+    }
+
+    public Ingredient() {
     }
 }

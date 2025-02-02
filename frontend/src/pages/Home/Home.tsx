@@ -1,9 +1,7 @@
 import {useEffect, useMemo, useState} from "react";
 import RecipeCard from "../../components/RecipeCard/RecipeCard.tsx"
-import {getRecipes} from "../../services/RecipeService.tsx";
-import {Recipe, Tags} from "../../models/Recipe.tsx";
+import {Recipe} from "../../models/Recipe.tsx";
 import {Category} from "../../models/Category.tsx";
-import {getCategoreis} from "../../services/CategoryService.tsx";
 import Categories from "../../components/Categories/Categories.tsx";
 import './Home.css'
 import TypeFilterForm from "../../components/Filters/Filter.tsx";
@@ -11,13 +9,17 @@ import SearchEngine from "../../components/SearchEngine/SearchEngine.tsx";
 import Sorter from "../../components/Sorter/Sorter.tsx";
 import {SorterOption} from "../../models/SorterOption.tsx";
 import Dialog from "../../components/Dialog/Dialog.tsx";
+import AddRecipeForm from "../../components/Forms/AddRecipeForm.tsx";
+import axios from "axios";
+import {Tag} from "../../models/Tag.ts";
 
 
 const Home = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
     const [state, setState] = useState({
-        selectedCategory: 0,
+        selectedCategory: 1,
         filters: {typeFilter: [] as string[], timeFilter: null as string | null},
         searchPhrase: null as string | null,
         sorter: null as string | null,
@@ -25,20 +27,34 @@ const Home = () => {
     const [dialog, setDialog] = useState(false);
 
     useEffect(() => {
-    const fetchedRecipes = getRecipes();
-    setRecipes(fetchedRecipes);
+        axios.get('http://localhost:8080/api/recipes')
+            .then(response=> setRecipes(response.data))
+            .catch(error => console.log(error))
     }, []);
 
     useEffect(() => {
-        const fetchedCategories = getCategoreis();
-        setCategories(fetchedCategories);
+        axios.get('http://localhost:8080/api/categories')
+            .then(response => setCategories(response.data))
+            .catch(error => console.error('Error fetching categories:', error));
+    }, []);
+
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/tags')
+            .then(response => setTags(response.data))
+            .catch(error => console.error('Error fetching tags:', error));
     }, []);
 
     const filteredRecipes  = useMemo(() => {
         let result = recipes;
 
-        if(state.selectedCategory !== null && state.selectedCategory !== 0) {//id 0 to "Wszytskie"
-            result = result.filter((recipe) => recipe.categoriesIds.includes(state.selectedCategory));
+
+        if(state.selectedCategory !== null) {
+            if (state.selectedCategory === 1) {
+                result = recipes;
+            } else {
+                result = result.filter((recipe) => recipe.categories.find((c) => c.id === state.selectedCategory));
+            }
         }
 
         if(state.searchPhrase) {
@@ -51,10 +67,13 @@ const Home = () => {
         }
 
         if (state.filters.typeFilter.length > 0) {
-            result = result.filter((recipe) => {
-                return state.filters.typeFilter.every((filter) => recipe.tags.includes(filter as Tags))
-            });
+            result = result.filter((recipe) =>
+                state.filters.typeFilter.every(filterTag =>
+                    recipe.tags.some(recipeTag => recipeTag.name === filterTag)
+                )
+            );
         }
+
 
         if (state.filters.timeFilter) {
             result = result.filter((recipe) => {
@@ -91,6 +110,7 @@ const Home = () => {
 
     const handleFilterChange = (selectedFilters: {typeFilter: string[], timeFilter: string | null}) => {
         setState(prevState => ({...prevState, filters: selectedFilters}));
+        console.log(state.filters.typeFilter);
     }
 
     const handleSearchPhraseChange = (newPhrase: string | null) => {
@@ -101,8 +121,12 @@ const Home = () => {
         setState(prevState => ({...prevState, sorter: sortAlg}));
     }
 
-    const typeFilters = [Tags.Vege, Tags.BezGlutenu, Tags.BezNabialu, Tags.BezCukru, Tags.DanieRybne];
+    const handleFormSubmit = () => {
+        setDialog(false);
+    }
+
     const timeFilters = ["do 15 min", "do 30 min", "do 60 min", "ponad 60 min"];
+    const typeFilters: string[] = tags.map((tag) => tag.name);
 
     return (
         <div className="home-container">
@@ -122,11 +146,16 @@ const Home = () => {
 
                     <button className="open-dialog-button" onClick={() => setDialog(true)}>Dodaj przepis</button>
 
-
                 <Dialog
                     openDialog={dialog}
                     closeDialog={() => setDialog(false)}
-                />
+                >
+                    <AddRecipeForm
+                        onSubmit={handleFormSubmit}
+                        onCancel={() => setDialog(false)}
+                        categories={categories}
+                        tags={tags}/>
+                </Dialog>
             </div>
             <div className="recipes-container">
                 <h1>Przepisy</h1>
@@ -150,7 +179,7 @@ const Home = () => {
                         <RecipeCard
                             key={recipe.id}
                             id={recipe.id}
-                            image={recipe.image}
+                            image={recipe.imgPath}
                             name={recipe.name}
                             cookingTime={recipe.cookingTime}
                         />

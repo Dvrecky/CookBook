@@ -17,7 +17,7 @@ export const RecipeValidator = (data: RecipeFormData): ValidationErrors => {
     const newErrors: ValidationErrors = {};
 
     const nameAndDescriptionPattern = /^[a-zA-Z0-9\s\-,.]+$/;
-    const ingredientPattern = /^(\d+\s+[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)(,\s*\d+\s+[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$/;
+    const ingredientPattern = /^(\d*\s*[a-zA-Z]+)(,\s*\d*\s*[a-zA-Z]+)*$/;
 
     console.log("dane sprawdzane: " + data.name);
 

@@ -3,6 +3,7 @@ package com.ReactProjects.cookbook.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -25,9 +26,9 @@ public class Recipe {
     @Column(name = "description")
     private String description;
 
-    @OneToMany
-    @JoinColumn(name = "ingredient_id")
-    private List<Ingredient> ingredients;
+    // Relacja OneToMany z składnikami
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ingredient> ingredients = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -37,12 +38,60 @@ public class Recipe {
     )
     private List<Category> categories;
 
+    @ManyToMany
+    @JoinTable(
+            name = "recipe_tag",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags;
+
     @Column(name = "cooking_time")
     private int cookingTime;
 
     @Column(name = "is_favourite")
     private boolean isFavourite;
 
-    @Column(name = "tags")
-    private String tags;
+    @Column(name = "imgPath")
+    private String imgPath;
+
+    public Recipe() {
+    }
+
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public int getCookingTime() {
+        return cookingTime;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
 }

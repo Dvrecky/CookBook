@@ -5,6 +5,8 @@
     padding: 20px;
     background-color: #f9f9f9;
     min-height: 50vh;
+    flex-direction: column;
+    gap: 3rem;
 }
 
 .recipe {
@@ -86,4 +88,19 @@
 
 .steps-container p:first-of-type {
     margin-top: 10px;
+}
+
+.buttons-container{
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.opt-button{
+    height: 40px;
+    width: 240px;
+    font-family: "Comic Sans MS", cursive;
+    font-size: 24px;
 }

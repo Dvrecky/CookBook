@@ -1,18 +1,13 @@
+import {Tag} from "./Tag.ts";
+import {Category} from "./Category.tsx";
+
 export interface Recipe {
     id: number;
-    image: string;
+    imgPath: string;
     name: string;
     description: string;
     ingredients: string[];
     cookingTime: number;
-    categoriesIds: number[];
-    tags: Tags[];
-}
-
-export enum Tags {
-    Vege = "Vege",
-    BezNabialu = "Bez Nabialu",
-    BezCukru = "Bez Cukru",
-    BezGlutenu = "Bez Glutenu",
-    DanieRybne = "Danie Rybne"
+    categories: Category[];
+    tags: Tag[];
 }

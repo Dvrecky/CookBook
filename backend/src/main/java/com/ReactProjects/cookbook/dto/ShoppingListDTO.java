@@ -12,4 +12,8 @@ import java.util.List;
 public class ShoppingListDTO {
 
     private List<ItemDTO> itemDTOS;
+
+    public void setItemDTOS(List<ItemDTO> itemDTOS) {
+        this.itemDTOS = itemDTOS;
+    }
 }

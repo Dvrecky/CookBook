@@ -1,99 +1,52 @@
 import {useEffect, useState} from "react";
-import {RecipeValidator} from "./RecipeValidator.ts";
+import {Recipe} from "../../models/Recipe.tsx";
 import {Category} from "../../models/Category.tsx";
-import "./AddRecipeForm.css"
 import {Tag} from "../../models/Tag.ts";
+import axios from "axios";
 
 interface Props {
-    onSubmit: (data: any) => void;
-    onCancel: () => void;
-    categories: Category[];
-    tags: Tag[]
+    onSubmit: (data: any) => void,
+    onCancel: () => void,
+    recipe?: Recipe
 }
-const initialFormData = {
-    name: "",
-    cookingTime: "",
-    description: "",
-    ingredients: "",
-    categoriesIds: [],
-    tags: [],
-    imgPath: ""
-};
 
-const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
+const EditRecipeForm = ({onSubmit, onCancel, recipe}: Props) => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
 
-    const [formData, setFormData]= useState({
-        name: "",
-        cookingTime: "",
-        description: "",
-        ingredients: "",
+    const [formData, setFormData] = useState({
+        name: recipe?.name,
+        cookingTime: recipe?.cookingTime,
+        description: recipe?.description,
+        ingredients: recipe?.ingredients,
         categoriesIds: [] as number[],
         tags: [] as string[],
-        imgPath: ""
-    });
+        imgPath: recipe?.imgPath
+    })
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/categories')
+            .then(response => setCategories(response.data))
+            .catch(error => console.error('Error fetching categories:', error));
+    }, []);
 
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const validationErrors = RecipeValidator(formData);
-        if (Object.keys(validationErrors).length === 0) {
-            // Formularz jest poprawny - można wysłać dane, np. do API lub innej funkcji
-            console.log("Dane formularza:", formData);
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/tags')
+            .then(response => setTags(response.data))
+            .catch(error => console.error('Error fetching tags:', error));
+    }, []);
 
-            const separatedIngredients = formData.ingredients.split(',');
-            console.log(separatedIngredients);
-
-            onSubmit(formData);
-            setFormData(initialFormData)
-        }
-        else {
-            setErrors(validationErrors);
-        }
+    const handleSubmit = () => {
+        onSubmit(formData);
     }
 
+    const handleFormChange = () => {
 
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, checked } = e.target;
-        if (name === "categories") {
-            setFormData((prev) => {
-                const currentArray = prev.categoriesIds;
-                if (checked) {
-                    return {
-                        ...prev,
-                        categoriesIds: [...currentArray, Number(value)],
-                    };
-                } else {
-                    return {
-                        ...prev,
-                        categoriesIds: currentArray.filter((id) => id !== Number(value)),
-                    };
-                }
-            });
-        } else if (name === "tags") {
-            setFormData((prev) => {
-                const currentArray = prev.tags;
-                if (checked) {
-                    return {
-                        ...prev,
-                        tags: [...currentArray, value],
-                    };
-                } else {
-                    return {
-                        ...prev,
-                        tags: currentArray.filter((tag) => tag !== value),
-                    };
-                }
-            });
-        }
-        else {
-            setFormData({ ...formData, [e.target.name]: value });
-        }
-
-    };
+    }
 
     const handleCloseForm = () => {
-        setFormData(initialFormData);
         onCancel();
     }
 
@@ -205,7 +158,6 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
 
         </form>
     )
-
 }
 
-export default AddRecipeForm;
+export default EditRecipeForm;
