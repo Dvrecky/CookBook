@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface RecipeService {
     List<Recipe> getRecipes();
     Optional<Recipe> getRecipe(Long id);
-
     Recipe addRecipe(RecipeRequestDto recipeDto);
+    void deleteRecipe(Long id);
 }

@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import './RecipeDetails.css'
 import Dialog from "../../components/Dialog/Dialog.tsx";
 import EditRecipeForm from "../../components/Forms/EditRecipeForm.tsx";
@@ -9,6 +9,7 @@ import axios from "axios";
 const RecipeDetails = () => {
     const [dialog, setDialog] = useState(false);
     const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const navigate = useNavigate();
 
     const { id } = useParams<{ id: string }>();
 
@@ -24,12 +25,14 @@ const RecipeDetails = () => {
 
 
     const handleDeleteRecipe = () => {
-
+        axios.delete(`http://localhost:8080/api/recipes/${id}`)
+            .then(() => {
+                console.log(`Recipe with id: ${id} deleted successfully.`)
+                navigate("/")
+            })
+            .catch(error => console.error('Error deleting recipe:', error));
     }
 
-    const handleDodajDoUlubionych = () => {
-
-    }
 
     const handleFormSubmit = () => {
         setDialog(false);
@@ -61,7 +64,6 @@ const RecipeDetails = () => {
                 </div>
             </div>
             <div className="buttons-container">
-                <button className="opt-button" onClick={handleDodajDoUlubionych}>Dodaj do ulubionych</button>
                 <button className="opt-button" type="button" onClick={handleDeleteRecipe}>Usun</button>
                 <button className="opt-button" onClick={() => setDialog(true)}>Edytuj</button>
 

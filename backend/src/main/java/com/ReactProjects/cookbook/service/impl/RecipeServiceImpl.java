@@ -78,4 +78,9 @@ public class RecipeServiceImpl implements RecipeService {
         // Zapis przepisu i składników w bazie
         return recipeRepository.save(recipe);
     }
+
+    @Override
+    public void deleteRecipe(Long id) {
+        recipeRepository.deleteById(id);
+    }
 }
