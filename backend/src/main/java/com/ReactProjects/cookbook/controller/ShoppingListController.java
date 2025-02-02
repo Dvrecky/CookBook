@@ -38,9 +38,9 @@ public class ShoppingListController {
     }
 
     @PostMapping
-    public ResponseEntity<Item> addOrUpdateItem(@RequestParam String name) {
+    public ResponseEntity<Item> addOrUpdateItem(@RequestParam String itemName) {
 
-        Item item = itemService.addOrUpdateItem(name);
+        Item item = itemService.addOrUpdateItem(itemName);
 
         return ResponseEntity.ok(item);
     }

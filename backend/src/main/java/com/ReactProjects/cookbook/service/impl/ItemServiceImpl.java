@@ -57,15 +57,17 @@ public class ItemServiceImpl implements ItemService {
     public Item addOrUpdateItem(String name) {
 
         Optional<Item> optionalItem = shoppingListRepository.findByName(name);
-        if(optionalItem.isPresent()) {
+        if (optionalItem.isPresent()) {
             Item item = optionalItem.get();
-            int quantity = item.getQuantity();
-            shoppingListRepository.changeItemQuantity(item.getId(), ++quantity);
-            item.setQuantity(++quantity);
+            int newQuantity = item.getQuantity() + 1; // Zwiększ ilość o 1
+
+            shoppingListRepository.changeItemQuantity(item.getId(), newQuantity);
+            item.setQuantity(newQuantity); // Aktualizujemy wartość w obiekcie
 
             return item;
         }
 
         return shoppingListRepository.save(new Item(1, name));
     }
+
 }

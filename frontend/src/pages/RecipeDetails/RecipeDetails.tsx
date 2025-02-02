@@ -38,6 +38,12 @@ const RecipeDetails = () => {
         setDialog(false);
     }
 
+    const handleAddIngredient = (ingredientName: string) => {
+        axios.post(`http://localhost:8080/api/shopping-list?itemName=${encodeURIComponent(ingredientName)}`)
+            .then(response => console.log(`Added ingredient: ${ingredientName}`))
+            .catch(error => console.error('Error adding ingredient:', error));
+    }
+
     return (
         <div className="recipe-details-container">
             <div className="recipe">
@@ -51,7 +57,10 @@ const RecipeDetails = () => {
                         <p>Składniki</p>
                         <ul className="ingredients-list-ul">
                             {recipe.ingredients.map((ingredient, index) => (
-                                <li className="ingredients-list-li" key={index}>{ingredient.name}</li>
+                                <li className="ingredients-list-li" key={index}>
+                                    <span className="ingredient-name">{ingredient.name}</span>
+                                    <button className="add-button stylish-button" onClick={() => handleAddIngredient(ingredient.name)}>+</button>
+                                </li>
                             ))}
                         </ul>
                     </div>

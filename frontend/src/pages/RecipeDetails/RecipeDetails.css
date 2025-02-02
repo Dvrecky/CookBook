@@ -1,3 +1,34 @@
+.stylish-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.stylish-button:hover {
+    background-color: #218838;
+}
+
+.ingredients-list-li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ingredient-name {
+    flex-grow: 1;
+}
+
+.stylish-button {
+    margin-left: 10px;
+}
+
+
 .recipe-details-container {
     display: flex;
     justify-content: center;
