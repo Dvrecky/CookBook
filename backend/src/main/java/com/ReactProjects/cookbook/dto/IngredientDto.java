@@ -7,6 +7,11 @@ public class IngredientDto {
     private String name;
     private int quantity;
     private String unit;
+    private Long id;
+
+    public long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

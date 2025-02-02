@@ -3,12 +3,14 @@ import {Recipe} from "../../models/Recipe.tsx";
 import {Category} from "../../models/Category.tsx";
 import {Tag} from "../../models/Tag.ts";
 import axios from "axios";
+import {RecipeValidator} from "./RecipeValidator.ts";
 
 interface Props {
     onSubmit: (data: any) => void,
     onCancel: () => void,
-    recipe?: Recipe
+    recipe: Recipe
 }
+
 
 const EditRecipeForm = ({onSubmit, onCancel, recipe}: Props) => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -16,14 +18,24 @@ const EditRecipeForm = ({onSubmit, onCancel, recipe}: Props) => {
     const [tags, setTags] = useState<Tag[]>([]);
 
     const [formData, setFormData] = useState({
-        name: recipe?.name,
-        cookingTime: recipe?.cookingTime,
-        description: recipe?.description,
-        ingredients: recipe?.ingredients,
-        categoriesIds: [] as number[],
-        tags: [] as string[],
-        imgPath: recipe?.imgPath
+        name: recipe.name,
+        cookingTime: recipe.cookingTime,
+        description: recipe.description,
+        ingredients: recipe.ingredients.map((ingredient) => `${ingredient.quantity} ${ingredient.name}`).join(", "),
+        categories: recipe.categories.map((c) => c.id),
+        tags: recipe.tags.map((c) => c.id),
+        imgPath: recipe.imgPath
     })
+
+    const initialFormData = {
+        name: recipe.name,
+        cookingTime: recipe.cookingTime,
+        description: recipe.description,
+        ingredients: recipe.ingredients.map((ingredient) => `${ingredient.quantity} ${ingredient.name}`).join(", "),
+        categories: recipe.categories.map((c) => c.id),
+        tags: recipe.tags.map((c) => c.id),
+        imgPath: recipe.imgPath
+    }
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/categories')
@@ -38,15 +50,89 @@ const EditRecipeForm = ({onSubmit, onCancel, recipe}: Props) => {
             .catch(error => console.error('Error fetching tags:', error));
     }, []);
 
-    const handleSubmit = () => {
-        onSubmit(formData);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const validationErrors = RecipeValidator(formData);
+        if (Object.keys(validationErrors).length === 0) {
+
+            const newRecipe: Recipe = {
+                name: formData.name,
+                description: formData.description,
+                cookingTime: formData.cookingTime,
+                imgPath: formData.imgPath,
+                categories: formData.categories,
+                tags: formData.tags,
+                ingredients: formData.ingredients.split(",").map((ingredient: string) => {
+                    return {
+                        name: ingredient.trim(),
+                        quantity: 0,
+                        unit: null,
+                    };
+                }),
+            };
+
+
+            await axios.put(`http://localhost:8080/api/recipes/${recipe.id}`, newRecipe)
+            .then(() => {
+                console.log("Recipe updated successfully");
+                onSubmit(newRecipe);  // Assuming this updates the state or form submission
+                setFormData(initialFormData);  // Reset form data
+            })
+            .catch((error) => {
+                console.error("Error updating recipe:", error);
+            });
+
+        }
+        else {
+            setErrors(validationErrors);
+        }
     }
 
-    const handleFormChange = () => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, checked } = e.target;
 
-    }
+        if (name === "categories") {
+            setFormData((prev) => {
+                const currentArray = prev.categories;
+
+                if (checked) {
+                    return {
+                        ...prev,
+                        categories: [...currentArray, Number(value)],
+                    };
+                } else {
+                    return {
+                        ...prev,
+                        categories: currentArray.filter((id) => id !== Number(value)), // Filtrujemy ID
+                    };
+                }
+            });
+        } else if (name === "tags") {
+            setFormData((prev) => {
+                const currentArray = prev.tags;
+                if (checked) {
+                    return {
+                        ...prev,
+                        tags: [...currentArray, Number(value)],
+                    };
+                } else {
+                    return {
+                        ...prev,
+                        tags: currentArray.filter((tagId) => tagId !== Number(value)),
+                    };
+                }
+            });
+        } else {
+            setFormData({ ...formData, [e.target.name]: value });
+        }
+
+        console.log(formData)
+    };
 
     const handleCloseForm = () => {
+        setErrors({});
+        setFormData(initialFormData);
         onCancel();
     }
 
@@ -115,6 +201,7 @@ const EditRecipeForm = ({onSubmit, onCancel, recipe}: Props) => {
                             type="checkbox"
                             value={category.id}
                             onChange={handleFormChange}
+                            checked={formData.categories.includes(category.id)}
                         />
                         {category.name}
                     </label>
@@ -131,8 +218,9 @@ const EditRecipeForm = ({onSubmit, onCancel, recipe}: Props) => {
                             className="checkbox"
                             type="checkbox"
                             name="tags"
-                            value={tag.name}
+                            value={tag.id}
                             onChange={handleFormChange}
+                            checked={formData.tags.includes(tag.id)}
                         />
                         {tag.name}
                     </label>

@@ -49,4 +49,11 @@ public class RecipeController {
 
         return ResponseEntity.ok("Recipe with id: " + id + " has been deleted successfully");
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateRecipe(@PathVariable long id, @RequestBody RecipeRequestDto recipeDto) {
+        recipeService.updateRecipe(id, recipeDto);
+
+        return ResponseEntity.ok("Recipe: " + id + " changed successfully");
+    }
 }

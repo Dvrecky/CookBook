@@ -11,4 +11,5 @@ public interface RecipeService {
     Optional<Recipe> getRecipe(Long id);
     Recipe addRecipe(RecipeRequestDto recipeDto);
     void deleteRecipe(Long id);
+    Recipe updateRecipe(Long id, RecipeRequestDto recipeDto);
 }

@@ -45,7 +45,6 @@ public class RecipeServiceImpl implements RecipeService {
     @Transactional
     public Recipe addRecipe(RecipeRequestDto recipeDto) {
 
-        System.out.println(recipeDto);
         Recipe recipe = new Recipe();
         recipe.setName(recipeDto.getName());
         recipe.setDescription(recipeDto.getDescription());
@@ -53,15 +52,14 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setFavourite(recipeDto.isFavourite());
         recipe.setImgPath(recipeDto.getImgPath());
 
-        // Pobranie kategorii z bazy po ID
+
         List<Category> categories = categoryRepository.findAllById(recipeDto.getCategories());
         recipe.setCategories(categories);
 
-        // Pobranie tagów po nazwie (zakładamy, że tagi już istnieją w bazie)
+
         List<Tag> tags = tagRepository.findByNameIn(recipeDto.getTags());
         recipe.setTags(tags);
 
-        // Tworzenie i przypisanie składników
         List<Ingredient> ingredients = recipeDto.getIngredients().stream()
                 .map(dto -> {
                     Ingredient ingredient = new Ingredient();
@@ -75,7 +73,6 @@ public class RecipeServiceImpl implements RecipeService {
 
         recipe.setIngredients(ingredients);
 
-        // Zapis przepisu i składników w bazie
         return recipeRepository.save(recipe);
     }
 
@@ -83,4 +80,56 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteRecipe(Long id) {
         recipeRepository.deleteById(id);
     }
+
+    @Override
+    public Recipe updateRecipe(Long id, RecipeRequestDto recipeDto) {
+        System.out.println(recipeDto);
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recipe not found with id " + id));
+
+        recipe.setName(recipeDto.getName());
+        recipe.setDescription(recipeDto.getDescription());
+        recipe.setCookingTime(recipeDto.getCookingTime());
+        recipe.setFavourite(recipeDto.isFavourite());
+        recipe.setImgPath(recipeDto.getImgPath());
+
+        List<Category> categories = categoryRepository.findAllById(recipeDto.getCategories());
+        recipe.setCategories(categories);
+
+        List<Tag> tags = tagRepository.findByNameIn(recipeDto.getTags());
+        recipe.setTags(tags);
+
+        List<Ingredient> existingIngredients = recipe.getIngredients();
+
+
+        recipe.getIngredients().clear();
+        List<Ingredient> updatedIngredients = recipeDto.getIngredients().stream()
+                .map(dto -> {
+                    Ingredient ingredient = existingIngredients.stream()
+                            .filter(i -> i.getId() != null && i.getId().equals(dto.getId()))
+                            .findFirst()
+                            .orElse(new Ingredient());
+
+                    ingredient.setName(dto.getName());
+                    ingredient.setQuantity(dto.getQuantity());
+                    ingredient.setUnit(dto.getUnit());
+                    ingredient.setRecipe(recipe);
+                    return ingredient;
+                })
+                .collect(Collectors.toList());
+
+        existingIngredients.removeIf(i -> !updatedIngredients.contains(i));
+
+        for (Ingredient newIngredient : updatedIngredients) {
+            if (!existingIngredients.contains(newIngredient)) {
+                existingIngredients.add(newIngredient);
+            }
+        }
+
+
+        return recipeRepository.save(recipe);
+    }
+
+
+
 }

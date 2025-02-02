@@ -40,7 +40,7 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
         e.preventDefault();
         const validationErrors = RecipeValidator(formData);
         if (Object.keys(validationErrors).length === 0) {
-            // Format data for POST request
+
             const newRecipe: Recipe = {
                 name: formData.name,
                 description: formData.description,
@@ -51,8 +51,8 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
                 ingredients: formData.ingredients.split(",").map((ingredient: string) => {
                     return {
                         name: ingredient.trim(),
-                        quantity: 0, // Assuming a default quantity if you don't want to modify this logic
-                        unit: null, // Assuming a default unit; you can change this
+                        quantity: 0,
+                        unit: null,
                     };
                 }),
             };
@@ -80,16 +80,14 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
                 const currentArray = prev.categories;
 
                 if (checked) {
-                    // Dodajemy ID kategorii (value) do tablicy categories
                     return {
                         ...prev,
-                        categories: [...currentArray, Number(value)], // Używamy Number(value), żeby upewnić się, że jest to typ number
+                        categories: [...currentArray, Number(value)],
                     };
                 } else {
-                    // Usuwamy ID kategorii (value) z tablicy categories
                     return {
                         ...prev,
-                        categories: currentArray.filter((id) => id !== Number(value)), // Filtrujemy ID
+                        categories: currentArray.filter((id) => id !== Number(value)),
                     };
                 }
             });
@@ -97,26 +95,21 @@ const AddRecipeForm = ({onSubmit, onCancel, categories, tags} : Props) => {
             setFormData((prev) => {
                 const currentArray = prev.tags;
                 if (checked) {
-                    // Dodajemy ID tagu (value) do tablicy tags (zakładając, że value to ID tagu w formie string)
                     return {
                         ...prev,
-                        tags: [...currentArray, Number(value)], // Używamy Number(value), żeby upewnić się, że jest to typ number
+                        tags: [...currentArray, Number(value)],
                     };
                 } else {
-                    // Usuwamy ID tagu z tablicy tags
                     return {
                         ...prev,
-                        tags: currentArray.filter((tagId) => tagId !== Number(value)), // Filtrujemy ID
+                        tags: currentArray.filter((tagId) => tagId !== Number(value)),
                     };
                 }
             });
         } else {
-            // Zmiana innych pól formularza
             setFormData({ ...formData, [e.target.name]: value });
         }
     };
-
-
 
 
 

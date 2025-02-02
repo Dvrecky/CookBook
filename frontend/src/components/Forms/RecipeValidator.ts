@@ -1,7 +1,7 @@
 
 export interface RecipeFormData {
     name: string;
-    cookingTime: string;
+    cookingTime: number;
     description: string;
     ingredients: string;
     categories: number[];
@@ -17,7 +17,7 @@ export const RecipeValidator = (data: RecipeFormData): ValidationErrors => {
     const newErrors: ValidationErrors = {};
 
     const nameAndDescriptionPattern = /^[a-zA-Z0-9\s\-,.]+$/;
-    const ingredientPattern = /^(\d*\s*[a-zA-Z]+)(,\s*\d*\s*[a-zA-Z]+)*$/;
+    // const ingredientPattern = /^(\d*\s*[a-zA-Z]+)(,\s*\d*\s*[a-zA-Z]+)*$/;
 
 
     if (!data.name.trim()) {
@@ -26,7 +26,7 @@ export const RecipeValidator = (data: RecipeFormData): ValidationErrors => {
         newErrors.name = "Nieprawidłowy format nazwy";
     }
 
-    if (data.cookingTime === "" || Number(data.cookingTime) < 0) {
+    if (!data.cookingTime || Number(data.cookingTime) < 0) {
         newErrors.cookingTime = "Czas przygotowania musi być liczbą większą lub równą 0";
     }
 
@@ -39,7 +39,8 @@ export const RecipeValidator = (data: RecipeFormData): ValidationErrors => {
     if (!data.ingredients.trim()) {
         newErrors.ingredients = "Składniki są wymagane";
 
-    } else if (!ingredientPattern.test(data.ingredients)) {
+    } else if (!nameAndDescriptionPattern.test(data.ingredients)) {
+        console.log(data.ingredients);
         newErrors.ingredients = "Nieprawidłowy format składników";
 
     }
