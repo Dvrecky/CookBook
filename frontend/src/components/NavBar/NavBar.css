@@ -1,0 +1,28 @@
+.navbar {
+    background-color: #333;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    margin-bottom: 0;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
