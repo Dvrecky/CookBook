@@ -1,15 +1,11 @@
 package com.ReactProjects.cookbook.controller;
 
-import com.ReactProjects.cookbook.dto.ItemDTO;
 import com.ReactProjects.cookbook.dto.ShoppingListDTO;
-import com.ReactProjects.cookbook.entity.Item;
 import com.ReactProjects.cookbook.service.ItemService;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:5173")
 @RequestMapping("/api/shopping-list")
 public class ShoppingListController {
 
