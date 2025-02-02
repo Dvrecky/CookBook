@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -44,11 +45,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteItemById(long id) {
 
-        try {
-            shoppingListRepository.deleteById(id);
-        } catch (Exception e) {
-            System.out.println("Błąd");
-        }
+        Optional<Item> itemOptional = shoppingListRepository.findById(id);
 
+        if(itemOptional.isPresent()) {
+            shoppingListRepository.deleteById(id);
+        }
     }
 }
