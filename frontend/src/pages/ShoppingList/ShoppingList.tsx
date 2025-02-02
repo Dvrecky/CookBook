@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './ShoppingList.css';
 
 interface Product {
   id: number;
@@ -56,7 +57,7 @@ const ShoppingList = () => {
   };
   
   return (
-    <div>
+    <div className="shopping-list-container">
       <h2>Lista zakupów</h2>
       <ProductList products={products} increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity} />
     </div>
@@ -75,12 +76,12 @@ const ProductList: React.FC<ProductListProps> = ({ products, increaseQuantity, d
   }
   
   return (
-    <div>
+    <div className="product-list">
       {products.map((product) => (
-        <div key={product.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span>{product.name} - {product.quantity}</span>
-          <button onClick={() => increaseQuantity(product.id)}>+</button>
-          <button onClick={() => decreaseQuantity(product.id)}>-</button>
+        <div key={product.id} className="product-item">
+          <span>{product.name}  <b>ilość: {product.quantity}</b></span>
+          <button className="modify-button increase-btn" onClick={() => increaseQuantity(product.id)}>+</button>
+          <button className="modify-button decrease-btn" onClick={() => decreaseQuantity(product.id)}>-</button>
         </div>
       ))}
     </div>
