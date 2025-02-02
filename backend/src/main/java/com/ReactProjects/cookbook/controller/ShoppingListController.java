@@ -1,6 +1,7 @@
 package com.ReactProjects.cookbook.controller;
 
 import com.ReactProjects.cookbook.dto.ShoppingListDTO;
+import com.ReactProjects.cookbook.entity.Item;
 import com.ReactProjects.cookbook.service.ItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,13 @@ public class ShoppingListController {
         itemService.deleteItemById(id);
 
         return ResponseEntity.ok("Item with id: " + id + " has been deleted successfully");
+    }
+
+    @PostMapping
+    public ResponseEntity<Item> addOrUpdateItem(@RequestParam String name) {
+
+        Item item = itemService.addOrUpdateItem(name);
+
+        return ResponseEntity.ok(item);
     }
 }

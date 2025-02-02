@@ -51,4 +51,21 @@ public class ItemServiceImpl implements ItemService {
             shoppingListRepository.deleteById(id);
         }
     }
+
+    @Transactional
+    @Override
+    public Item addOrUpdateItem(String name) {
+
+        Optional<Item> optionalItem = shoppingListRepository.findByName(name);
+        if(optionalItem.isPresent()) {
+            Item item = optionalItem.get();
+            int quantity = item.getQuantity();
+            shoppingListRepository.changeItemQuantity(item.getId(), ++quantity);
+            item.setQuantity(++quantity);
+
+            return item;
+        }
+
+        return shoppingListRepository.save(new Item(1, name));
+    }
 }

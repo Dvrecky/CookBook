@@ -5,11 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "Tag")
+@Table(name = "Tags")
 public class Tag {
 
     @Id

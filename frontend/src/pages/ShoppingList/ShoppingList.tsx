@@ -61,8 +61,6 @@ const ShoppingList = () => {
   );
 };
 
-
-
 const ProductList: React.FC<ProductListProps> = ({ products, increaseQuantity, decreaseQuantity }) => {
   if (products.length === 0) {
     return <p>Lista zakupów jest pusta.</p>;
