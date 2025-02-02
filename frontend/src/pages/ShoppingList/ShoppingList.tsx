@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ShoppingList.css';
-
-interface Product {
-  id: number;
-  name: string;
-  quantity: number;
-}
+import { Product } from '../../models/Product';
+import { ProductListProps } from '../../models/ProductListProps';
+import { ShoppingListData } from '../../models/ShoppingListData';
 
 const ShoppingList = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/shopping-list')
+    axios.get<ShoppingListData>('http://localhost:8080/api/shopping-list')
       .then(response => setProducts(response.data.itemDTOS || []))
       .catch(error => console.error('Error fetching shopping list:', error));
   }, []);
@@ -64,11 +61,7 @@ const ShoppingList = () => {
   );
 };
 
-interface ProductListProps {
-  products: Product[];
-  increaseQuantity: (id: number) => void;
-  decreaseQuantity: (id: number) => void;
-}
+
 
 const ProductList: React.FC<ProductListProps> = ({ products, increaseQuantity, decreaseQuantity }) => {
   if (products.length === 0) {
